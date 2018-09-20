@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 import json
 from flask_httpauth import HTTPBasicAuth
 from functools import wraps
@@ -106,23 +106,15 @@ def api_deleteroom():
         return ui.read()
 
 
-@app.route('/deleted',methods=['DELETE','POST'])
+@app.route('/deleted',methods=['DELETE'])
 def api_successfuldeletion():
     formData = request.form
     print(formData)
 
     deleteID = formData.get('RoomID')
 
-    with open('data.json') as data_file:
-        data_loaded = json.load(data_file)
-        for element in data_loaded:
-            if element == deleteID:
-                del data_loaded[element]
-        print (data_loaded)
-    #for i in range (len(data_loaded)):
-        #if(data_loaded[i] == 'deleteID'):
-            #del data_loaded[i]
-            #break
+    for element in data_loaded:
+        del element[deleteID]
 
     return "Room has been deleted from database!"
 
