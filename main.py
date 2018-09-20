@@ -90,11 +90,31 @@ def api_successfulcreation():
                           indent=4,
                           separators=(',', ': '), ensure_ascii=False)
         outfile.write(str_)
-    print (information)
-    print (floorLevel)
-    print(capacity)
-    print(roomType)
-    print (data_loaded)
+   # print (information)
+   # print (floorLevel)
+   # print(capacity)
+   # print(roomType)
+   # print (data_loaded)
     return "Room added to database!"
+
+@app.route('/room/deletion', methods=['GET'])
+#@requires_auth
+def api_deleteroom():
+    with open("delete_room.html") as ui:
+        return ui.read()
+
+
+@app.route('/deleted',methods=['DELETE'])
+def api_successfuldeletion():
+    formData = request.form
+    print(formData)
+
+    deleteID = formData.get('RoomID')
+
+    for element in data_loaded:
+        del element[deleteID]
+
+    return "Room has been deleted from database!"
+
 if __name__ == '__main__':
     app.run(port=5000) #run in cmd curl http://localhost:5000
