@@ -65,7 +65,8 @@ def api_room(roomid):
 	if request.method == 'GET':
 		if roomid in data_loaded:
 			information = list(data_loaded[roomid])
-			return "You are searching for room number: " + roomid + "\n" + "Location: " + information[0] + "\n" + "Capacity: " + information[1] + "\nType: " + information[2] + '\n'
+			building = roomid[0]
+			return "You are searching for room number: " + roomid + "\n" + "Building: " + building + "\n" + "Level: " + information[0] + "\n" + "Capacity: " + information[1] + "\nType: " + information[2] + '\n'
 		else:
 			return "The room number you are searching for does not exist!!\n"
 @app.route('/room/create', methods=['GET'])
