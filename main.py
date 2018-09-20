@@ -12,111 +12,115 @@ data_loaded = None
 #}
 
 with open('data.json') as data_file:
-    data_loaded = json.load(data_file)
+	data_loaded = json.load(data_file)
 
 def numRooms():
-        listOfRooms = []
-        for key, value in data_loaded.items():
-            listOfRooms.append(key)
-        return(listOfRooms)
+		listOfRooms = []
+		for key, value in data_loaded.items():
+			listOfRooms.append(key)
+		return(listOfRooms)
 
 def check_auth(username, password):
-    return username == 'admin' and password == 'secret'
+	return username == 'admin' and password == 'secret'
 
-#def authenticate():
- #   message = {'message': "Authenticate."}
-  #  resp = str(message)
+def authenticate():
+	message = {'message': "Authenticate."}
+	resp = str(message)
 
-   # resp.status_code = 401
-    #resp.headers['WWW-Authenticate'] = 'Basic realm="Example"'
+	resp.status_code = 401
+	resp.headers['WWW-Authenticate'] = 'Basic realm="Example"'
+	return resp
 
-    #return resp
+def requires_auth(f):
+	@wraps(f)
+	def decorated(*args, **kwargs):
+		auth = request.authorization
+		if not auth:
+			return authenticate()
 
-#def requires_auth(f):
- #   @wraps(f)
-  #  def decorated(*args, **kwargs):
-   #     auth = request.authorization
-    #    if not auth:
-     #       return authenticate()
+		elif not check_auth(auth.username, auth.password):
+			return authenticate()
+		return f(*args, **kwargs)
 
-      #  elif not check_auth(auth.username, auth.password):
-       #     return authenticate()
-        #return f(*args, **kwargs)
+	return decorated
 
-    #return decorated
+# @app.route('/secrets')
+# @requires_auth
+# def api_hello():
+# 	return "Shhh this is top secret spy stuff!\n"
 
 @app.route('/')
 def roomInfoService():
-    #if request.authorization and request.authorization.username == "staff" and request.authorization.password == 'superman':
+	#if request.authorization and request.authorization.username == "staff" and request.authorization.password == 'superman':
 
-    return 'This is SUTD Room Information Services! \n'
+	return 'This is SUTD Room Information Services! \n'
 
 @app.route('/room', methods=['GET']) #produces a list of rooms available
 def api_getrooms():
-    if request.method == 'GET':
-        return "List of rooms available:\n" + str(numRooms()) + '\n'
+	if request.method == 'GET':
+		return "List of rooms available:\n" + str(numRooms()) + '\n'
 
 @app.route('/room/<roomid>', methods=['GET']) #gets the room information
 def api_room(roomid):
-    if request.method == 'GET':
-        if roomid in data_loaded:
-            information = list(data_loaded[roomid])
-            return "You are searching for room number: " + roomid + "\n" + "Location: " + information[0] + "\n" + "Capacity: " + information[1] + "\nType: " + information[2] + '\n'
-        else:
-            return "The room number you are searching for does not exist!!\n"
+	if request.method == 'GET':
+		if roomid in data_loaded:
+			information = list(data_loaded[roomid])
+			return "You are searching for room number: " + roomid + "\n" + "Location: " + information[0] + "\n" + "Capacity: " + information[1] + "\nType: " + information[2] + '\n'
+		else:
+			return "The room number you are searching for does not exist!!\n"
 @app.route('/room/create', methods=['GET'])
 #@requires_auth
 def api_createroom():
-    with open("create_room.html") as ui:
-        return ui.read()
+	with open("create_room.html") as ui:
+		return ui.read()
 
 @app.route('/successful',methods=['POST'])
 def api_successfulcreation():
-    formData = request.form
-    print(formData)
+	formData = request.form
+	print(formData)
 
-    roomID = formData.get('RoomID')
-    floorLevel = formData.get('Level')
-    capacity = formData.get('Capacity')
-    roomType = formData.get('RoomType')
+	roomID = formData.get('RoomID')
+	floorLevel = formData.get('Level')
+	capacity = formData.get('Capacity')
+	roomType = formData.get('RoomType')
 
-    information = []
-    information.append('Level ' + floorLevel)
-    information.append(capacity)
-    information.append(roomType)
+	information = []
+	information.append('Level ' + floorLevel)
+	information.append(capacity)
+	information.append(roomType)
 
-    data_loaded[roomID] =  information
+	data_loaded[roomID] =  information
 
-    with open('data.json', 'w', encoding='utf8') as outfile:
-        str_ = json.dumps(data_loaded,
-                          indent=4,
-                          separators=(',', ': '), ensure_ascii=False)
-        outfile.write(str_)
+	with open('data.json', 'w', encoding='utf8') as outfile:
+		str_ = json.dumps(data_loaded,
+						  indent=4,
+						  separators=(',', ': '), ensure_ascii=False)
+		outfile.write(str_)
    # print (information)
    # print (floorLevel)
    # print(capacity)
    # print(roomType)
    # print (data_loaded)
-    return "Room added to database!"
+	return "Room added to database!"
 
 @app.route('/room/deletion', methods=['GET'])
 #@requires_auth
 def api_deleteroom():
-    with open("delete_room.html") as ui:
-        return ui.read()
+	with open("delete_room.html") as ui:
+		return ui.read()
 
 
 @app.route('/deleted',methods=['DELETE'])
 def api_successfuldeletion():
-    formData = request.form
-    print(formData)
+	formData = request.form
+	print(formData)
 
-    deleteID = formData.get('RoomID')
+	deleteID = formData.get('RoomID')
 
-    for element in data_loaded:
-        del element[deleteID]
+	for element in data_loaded:
+		del element[deleteID]
 
-    return "Room has been deleted from database!"
+	return "Room has been deleted from database!"
 
 if __name__ == '__main__':
-    app.run(port=5000) #run in cmd curl http://localhost:5000
+	app.run(port=5000) #run in cmd curl http://localhost:5000
