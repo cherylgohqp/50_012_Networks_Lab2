@@ -49,19 +49,21 @@ def check_auth(username, password):
 def roomInfoService():
     #if request.authorization and request.authorization.username == "staff" and request.authorization.password == 'superman':
 
-    return 'This is SUTD Room Information Services!'
+    return 'This is SUTD Room Information Services! \n'
 
 @app.route('/room', methods=['GET']) #produces a list of rooms available
 def api_getrooms():
     if request.method == 'GET':
-        return "List of rooms available:\n" + str(numRooms())
+        return "List of rooms available:\n" + str(numRooms()) + '\n'
 
 @app.route('/room/<roomid>', methods=['GET']) #gets the room information
 def api_room(roomid):
     if request.method == 'GET':
-        information = list(data_loaded[roomid])
-        return "You are searching for room number: " + roomid + "\n" + "Location: " + information[0] + "\n" + "Capacity: " + information[1] + "\nType: " + information[2]
-
+        if roomid in data_loaded:
+            information = list(data_loaded[roomid])
+            return "You are searching for room number: " + roomid + "\n" + "Location: " + information[0] + "\n" + "Capacity: " + information[1] + "\nType: " + information[2] + '\n'
+        else:
+            return "The room number you are searching for does not exist!!\n"
 @app.route('/room/create', methods=['GET'])
 #@requires_auth
 def api_createroom():
