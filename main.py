@@ -68,5 +68,33 @@ def api_createroom():
     with open("create_room.html") as ui:
         return ui.read()
 
+@app.route('/successful',methods=['POST'])
+def api_successfulcreation():
+    formData = request.form
+    print(formData)
+
+    roomID = formData.get('RoomID')
+    floorLevel = formData.get('Level')
+    capacity = formData.get('Capacity')
+    roomType = formData.get('RoomType')
+
+    information = []
+    information.append('Level ' + floorLevel)
+    information.append(capacity)
+    information.append(roomType)
+
+    data_loaded[roomID] =  information
+
+    with open('data.json', 'w', encoding='utf8') as outfile:
+        str_ = json.dumps(data_loaded,
+                          indent=4,
+                          separators=(',', ': '), ensure_ascii=False)
+        outfile.write(str_)
+    print (information)
+    print (floorLevel)
+    print(capacity)
+    print(roomType)
+    print (data_loaded)
+    return "Room added to database!"
 if __name__ == '__main__':
     app.run(port=5000) #run in cmd curl http://localhost:5000
