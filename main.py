@@ -116,12 +116,21 @@ def api_successfuldeletion():
 	formData = request.form
 	print(formData)
 
-	deleteID = formData.get('RoomID')
+	deleteID = formData.get('DeleteID')
+	print ("deleteID ", deleteID)
+	print ("data_loaded ", data_loaded)
 
-	for element in data_loaded:
-		del element[deleteID]
 
-	return "Room has been deleted from database!"
+	if deleteID not in data_loaded:
+		return "The room you want to delete does not exist!\n"
+	else:
+		del data_loaded[deleteID]
+		with open('data.json', 'w', encoding='utf8') as outfile:
+			str_ = json.dumps(data_loaded,
+							  indent=4,
+							  separators=(',', ': '), ensure_ascii=False)
+			outfile.write(str_)
+		return "Room has been deleted from database!\n"
 
 if __name__ == '__main__':
 	app.run(port=5000) #run in cmd curl http://localhost:5000
