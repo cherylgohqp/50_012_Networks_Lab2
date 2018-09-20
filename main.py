@@ -111,7 +111,7 @@ def api_deleteroom():
 		return ui.read()
 
 
-@app.route('/deleted',methods=['DELETE'])
+@app.route('/deleted',methods=['DELETE','POST']) #added post here so this api can be called lel if not it will show method not available etc.
 def api_successfuldeletion():
 	formData = request.form
 	print(formData)
