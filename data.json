@@ -13,6 +13,7 @@
         "level 7",
         "20",
         "Office"
+<<<<<<< HEAD
     ],
     "1.408": [
         "Level 4",
@@ -23,5 +24,7 @@
         "Level 6",
         "50",
         "Classroom"
+=======
+>>>>>>> Cheryl
     ]
 }
