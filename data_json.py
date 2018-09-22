@@ -1,9 +1,9 @@
 import json
 
 #define data
-data = {'1.205': ['level 2','50', 'Classroom'],
-        '1.208': ['level 2','45','Classroom'],
-        '1.704': ['level 7','20','Office']
+data = {'1.205': ['Level2','50', 'Classroom'],
+        '1.208': ['Level2','45','Classroom'],
+        '1.704': ['Level7','20','Office']
 } #room: level , capacity, office/classroom
 
 #writes JSON file
