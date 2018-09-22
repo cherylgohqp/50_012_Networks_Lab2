@@ -24,8 +24,13 @@ def check_auth(username, password):
     return username == 'admin' and password == 'secret'
 
 def authenticate():
+<<<<<<< HEAD
     message = {'message': "Authenticate."}
     resp = jsonify(message)
+=======
+	message = {'message': "Authenticate."}
+	resp = jsonify(message)
+>>>>>>> origin/Cheryl-New
 
     resp.status_code = 401
     resp.headers['WWW-Authenticate'] = 'Basic realm="Example"'
@@ -43,8 +48,11 @@ def requires_auth(f):
             return authenticate()
         return f(*args, **kwargs)
 
+<<<<<<< HEAD
     return decorated
 
+=======
+>>>>>>> origin/Cheryl-New
 @app.route('/')
 def roomInfoService():
 	#if request.authorization and request.authorization.username == "staff" and request.authorization.password == 'superman':
