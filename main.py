@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import json
 from flask_httpauth import HTTPBasicAuth
 from functools import wraps
@@ -25,7 +25,7 @@ def check_auth(username, password):
 
 def authenticate():
 	message = {'message': "Authenticate."}
-	resp = str(message)
+	resp = jsonify(message)
 
 	resp.status_code = 401
 	resp.headers['WWW-Authenticate'] = 'Basic realm="Example"'
@@ -43,11 +43,6 @@ def requires_auth(f):
 		return f(*args, **kwargs)
 
 	return decorated
-
-# @app.route('/secrets')
-# @requires_auth
-# def api_hello():
-# 	return "Shhh this is top secret spy stuff!\n"
 
 @app.route('/')
 def roomInfoService():
@@ -70,7 +65,7 @@ def api_room(roomid):
 		else:
 			return "The room number you are searching for does not exist!!\n"
 @app.route('/room/create', methods=['GET'])
-#@requires_auth
+@requires_auth
 def api_createroom():
 	with open("create_room.html") as ui:
 		return ui.read()
@@ -105,7 +100,7 @@ def api_successfulcreation():
 	return "Room added to database!"
 
 @app.route('/room/deletion', methods=['GET'])
-#@requires_auth
+@requires_auth
 def api_deleteroom():
 	with open("delete_room.html") as ui:
 		return ui.read()
