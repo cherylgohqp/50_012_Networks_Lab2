@@ -1,3 +1,5 @@
+#Completed by: Kenneth Chua and Cheryl Goh
+
 from flask import Flask, request, jsonify, abort
 import json
 from flask_httpauth import HTTPBasicAuth
@@ -11,15 +13,15 @@ data_loaded = None
  #   "staff" : "superman"
 #}
 
-with open('data.json') as data_file:
-	# import pdb;pdb.set_trace()
-	data_loaded = json.load(data_file)
-
 def numRooms():
-		listOfRooms = []
-		for key, value in data_loaded.items():
-			listOfRooms.append(key)
-		return(listOfRooms)
+	listOfRooms = []
+	with open('data.json') as data_file:
+		# import pdb;pdb.set_trace()
+		data_loaded = json.load(data_file)
+	for key, value in data_loaded.items():
+		listOfRooms.append(key)
+	print(listOfRooms)
+	return(listOfRooms)
 
 def check_auth(username, password):
     return username == 'admin' and password == 'secret'
@@ -74,6 +76,9 @@ def api_createroom():
 
 @app.route('/successful',methods=['POST'])
 def api_successfulcreation():
+	with open('data.json') as data_file:
+		# import pdb;pdb.set_trace()
+		data_loaded = json.load(data_file)
 	formData = request.form
 	print(formData)
 	information = []
@@ -119,6 +124,9 @@ def api_deleteroom():
 
 @app.route('/deleted',methods=['DELETE','POST'])
 def api_successfuldeletion():
+	with open('data.json') as data_file:
+		# import pdb;pdb.set_trace()
+		data_loaded = json.load(data_file)
 	formData = request.form
 	print(formData)
 
