@@ -22,7 +22,7 @@ def numRooms():
 		return(listOfRooms)
 
 def check_auth(username, password):
-    return username == 'admin' and password == 'secret'
+	return username == 'admin' and password == 'secret'
 
 def authenticate():
 	message = {'message': "Authenticate."}
@@ -34,17 +34,17 @@ def authenticate():
 	return resp
 
 def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth: 
-            return authenticate()
+	@wraps(f)
+	def decorated(*args, **kwargs):
+		auth = request.authorization
+		if not auth: 
+			return authenticate()
 
-        elif not check_auth(auth.username, auth.password):
-            return authenticate()
-        return f(*args, **kwargs)
+		elif not check_auth(auth.username, auth.password):
+			return authenticate()
+		return f(*args, **kwargs)
 
-    return decorated
+	return decorated
 
 @app.route('/')
 def roomInfoService():
@@ -82,7 +82,7 @@ def api_successfulcreation():
 	if formData.get('selectFiles') is not '':
 		json_uploadfile = request.files['selectFiles']
 		json_loaded = json.load(json_uploadfile)
-		merge_loaded = {**data_loaded,**json_loaded}	
+		merge_loaded = {**data_loaded,**json_loaded}
 
 	roomID = formData.get('RoomID')
 	floorLevel = formData.get('Level')
@@ -108,6 +108,9 @@ def api_successfulcreation():
    # print(capacity)
    # print(roomType)
    # print (data_loaded)
+	if formData.get('RoomID') is '' and formData.get('selectFiles') is '':
+		return "You have not added any information!"
+			
 	return "Room added to database!"
 
 @app.route('/room/deletion', methods=['GET'])
