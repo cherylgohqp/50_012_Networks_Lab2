@@ -1,8 +1,8 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify, abort
 import json
 from flask_httpauth import HTTPBasicAuth
 from functools import wraps
-
+import re
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 data_loaded = None
@@ -12,6 +12,7 @@ data_loaded = None
 #}
 
 with open('data.json') as data_file:
+	# import pdb;pdb.set_trace()
 	data_loaded = json.load(data_file)
 
 def numRooms():
@@ -20,6 +21,30 @@ def numRooms():
 			listOfRooms.append(key)
 		return(listOfRooms)
 
+def check_auth(username, password):
+    return username == 'admin' and password == 'secret'
+
+def authenticate():
+	message = {'message': "Authenticate."}
+	resp = jsonify(message)
+
+	resp.status_code = 401
+	resp.headers['WWW-Authenticate'] = 'Basic realm="Example"'
+	
+	return resp
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth: 
+            return authenticate()
+
+        elif not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+
+    return decorated
 
 @app.route('/')
 def roomInfoService():
@@ -41,21 +66,8 @@ def api_room(roomid):
 			return "You are searching for room number: " + roomid + "\n" + "Building: " + building + "\n" + "Level: " + information[0] + "\n" + "Capacity: " + information[1] + "\nType: " + information[2] + '\n'
 		else:
 			return "The room number you are searching for does not exist!!\n"
-
-@app.route('/room/login', methods=['GET'])
-def api_auth():
-	with open("auth_page.html") as ui:
-		return ui.read()
-
-def checkAuth(id,pw):
-	with open('staffdata.json') as staffdata_file:
-		staff_data_loaded = json.load(staffdata_file)
-		if staff_data_loaded[id] == pw:
-			print ("True")
-		else:
-			print ("False")
-
-@app.route('/room/login/create', methods=['GET'])
+@app.route('/room/create', methods=['GET'])
+@requires_auth
 def api_createroom():
 	with open("create_room.html") as ui:
 		return ui.read()
@@ -64,28 +76,42 @@ def api_createroom():
 def api_successfulcreation():
 	formData = request.form
 	print(formData)
+	information = []
+	merge_loaded = data_loaded
+
+	if formData.get('selectFiles') is not '':
+		json_uploadfile = request.files['selectFiles']
+		json_loaded = json.load(json_uploadfile)
+		merge_loaded = {**data_loaded,**json_loaded}	
 
 	roomID = formData.get('RoomID')
 	floorLevel = formData.get('Level')
 	capacity = formData.get('Capacity')
 	roomType = formData.get('RoomType')
 
-	information = []
-	information.append('Level ' + floorLevel)
-	information.append(capacity)
-	information.append(roomType)
 
-	data_loaded[roomID] =  information
+
+	if roomID != "" or floorLevel != "" or capacity != "" or roomType != "":
+		information.append('Level' + floorLevel)
+		information.append(capacity)
+		information.append(roomType)
+
+		data_loaded[roomID] =  information
 
 	with open('data.json', 'w', encoding='utf8') as outfile:
-		str_ = json.dumps(data_loaded,
+		str_ = json.dumps(merge_loaded,
 						  indent=4,
 						  separators=(',', ': '), ensure_ascii=False)
 		outfile.write(str_)
+   # print (information)
+   # print (floorLevel)
+   # print(capacity)
+   # print(roomType)
+   # print (data_loaded)
 	return "Room added to database!"
 
-@app.route('/room/login/deletion', methods=['GET'])
-#@requires_auth
+@app.route('/room/deletion', methods=['GET'])
+@requires_auth
 def api_deleteroom():
 	with open("delete_room.html") as ui:
 		return ui.read()
@@ -111,9 +137,6 @@ def api_successfuldeletion():
 							  separators=(',', ': '), ensure_ascii=False)
 			outfile.write(str_)
 		return "Room has been deleted from database!\n"
-
-
-
 
 if __name__ == '__main__':
 	app.run(port=5000) #run in cmd curl http://localhost:5000
