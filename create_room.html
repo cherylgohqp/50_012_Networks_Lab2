@@ -1,3 +1,9 @@
+<style>
+.tab {
+       display:inline-block;
+       margin-left: 40px;
+}</style>
+
 <html>
 <head>
     <title>Update Rooms</title>
@@ -12,7 +18,21 @@
     <br/>
     <input type="file" name="selectFiles" value="Import" />
     <button id="import">Import JSON file</button>
-
+    <h4>Example of your json format: </h4>
+    <p>{
+        <br/>
+        "1.205": [
+        <br/>
+        <span class="tab">"Level2",
+        <br/>
+        "50",
+        <br/>
+        "Classroom"
+        <br/>
+    ]
+        <br/></span>
+        <br/>}
+    </p>
 </form>
 </body>
 </html>

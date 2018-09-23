@@ -117,7 +117,7 @@ def api_deleteroom():
 		return ui.read()
 
 
-@app.route('/deleted',methods=['DELETE'])
+@app.route('/deleted',methods=['DELETE','POST'])
 def api_successfuldeletion():
 	formData = request.form
 	print(formData)
