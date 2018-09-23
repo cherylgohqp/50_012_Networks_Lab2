@@ -1,8 +1,8 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify
 import json
 from flask_httpauth import HTTPBasicAuth
 from functools import wraps
-import re
+
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 data_loaded = None
@@ -75,39 +75,18 @@ def api_createroom():
 def api_successfulcreation():
 	formData = request.form
 	print(formData)
-	information = []
-	json_uploadfile = request.files['selectFiles'].read()
-	#content_file = csv.DictReader(json_uploadfile)
-	#print (content_file)
-
-	if len(json_uploadfile) == 0:
-		abort(400, "No file uploaded!")
-	else:
-		# print(type(json_uploadfile)) => class bytes
-		string = json_uploadfile.decode("utf-8") #convert to strings
-		newString = string.replace('\r\n','').replace(' ','').strip()
-		#newString gives ['{"1.114":["Level1","50","Classroom"]}']
-		info = newString[10:-2]
-		re.sub("'", '', info)
-		information.append(info)
-		#print(information) #['"Level1","50","Classroom"'] moight need to remove the '
-		json_roomid = newString[2:7]
-		#print(json_roomid)
-		data_loaded[json_roomid] = information
 
 	roomID = formData.get('RoomID')
 	floorLevel = formData.get('Level')
 	capacity = formData.get('Capacity')
 	roomType = formData.get('RoomType')
 
+	information = []
+	information.append('Level ' + floorLevel)
+	information.append(capacity)
+	information.append(roomType)
 
-
-	if roomID != "" or floorLevel != "" or capacity != "" or roomType != "":
-		information.append('Level' + floorLevel)
-		information.append(capacity)
-		information.append(roomType)
-
-		data_loaded[roomID] =  information
+	data_loaded[roomID] =  information
 
 	with open('data.json', 'w', encoding='utf8') as outfile:
 		str_ = json.dumps(data_loaded,

@@ -1,35 +1,27 @@
 {
     "1.205": [
-        "Level2",
+        "level 2",
         "50",
         "Classroom"
     ],
     "1.208": [
-        "Level2",
+        "level 2",
         "45",
         "Classroom"
     ],
     "1.704": [
-        "Level7",
+        "level 7",
         "20",
         "Office"
     ],
     "1.408": [
-        "Level4",
+        "Level 4",
         "30",
         "Office"
     ],
     "1.605": [
-        "Level6",
+        "Level 6",
         "50",
         "Classroom"
-<<<<<<< HEAD
-=======
-    ],
-    "1.234": [
-        "Level2",
-        "50",
-        "Classroom"
->>>>>>> Cheryl-New
     ]
 }
