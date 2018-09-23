@@ -12,6 +12,7 @@ data_loaded = None
 #}
 
 with open('data.json') as data_file:
+	# import pdb;pdb.set_trace()
 	data_loaded = json.load(data_file)
 
 def numRooms():
@@ -76,24 +77,12 @@ def api_successfulcreation():
 	formData = request.form
 	print(formData)
 	information = []
-	json_uploadfile = request.files['selectFiles'].read()
-	#content_file = csv.DictReader(json_uploadfile)
-	#print (content_file)
+	merge_loaded = data_loaded
 
-	if len(json_uploadfile) == 0:
-		abort(400, "No file uploaded!")
-	else:
-		# print(type(json_uploadfile)) => class bytes
-		string = json_uploadfile.decode("utf-8") #convert to strings
-		newString = string.replace('\r\n','').replace(' ','').strip()
-		#newString gives ['{"1.114":["Level1","50","Classroom"]}']
-		info = newString[10:-2]
-		re.sub("'", '', info)
-		information.append(info)
-		#print(information) #['"Level1","50","Classroom"'] moight need to remove the '
-		json_roomid = newString[2:7]
-		#print(json_roomid)
-		data_loaded[json_roomid] = information
+	if formData.get('selectFiles') is not '':
+		json_uploadfile = request.files['selectFiles']
+		json_loaded = json.load(json_uploadfile)
+		merge_loaded = {**data_loaded,**json_loaded}	
 
 	roomID = formData.get('RoomID')
 	floorLevel = formData.get('Level')
@@ -110,7 +99,7 @@ def api_successfulcreation():
 		data_loaded[roomID] =  information
 
 	with open('data.json', 'w', encoding='utf8') as outfile:
-		str_ = json.dumps(data_loaded,
+		str_ = json.dumps(merge_loaded,
 						  indent=4,
 						  separators=(',', ': '), ensure_ascii=False)
 		outfile.write(str_)
