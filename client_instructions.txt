@@ -1,0 +1,15 @@
+
+To enter the main page:
+curl http://localhost:5000
+
+To display the list of rooms available:
+curl http://localhost:5000/room
+
+To find out information about a particular room:
+curl http://localhost:5000/room/1.205
+
+To authenticate and add rooms to the database(However it is in HTML).
+curl -v -u "admin:secret" http://localhost:5000/room/create
+
+To authenticate and delete rooms to the database(However it is in HTML).
+curl -v -u "admin:secret" http://localhost:5000/room/deletion
