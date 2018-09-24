@@ -62,6 +62,9 @@ def api_getrooms():
 @app.route('/room/<roomid>', methods=['GET']) #gets the room information
 def api_room(roomid):
 	if request.method == 'GET':
+		with open('data.json') as data_file:
+			# import pdb;pdb.set_trace()
+			data_loaded = json.load(data_file)
 		if roomid in data_loaded:
 			information = list(data_loaded[roomid])
 			building = roomid[0]
