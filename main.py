@@ -9,10 +9,6 @@ app = Flask(__name__)
 auth = HTTPBasicAuth()
 data_loaded = None
 
-#user_data = {
- #   "staff" : "superman"
-#}
-
 def numRooms():
 	listOfRooms = []
 	with open('data.json') as data_file:
